@@ -40,5 +40,25 @@ export class TasksService {
     status?: TaskStatus,
     page?: number,
     limit?: number,
-  ): Task[] {}
+    sortBy?: string,
+  ): Task[] {
+    const paginate = (list: Task[]) => {
+      if (!limit && (page === 1 || isNaN(page))) return list
+
+      const startIndex = (page - 1) * limit
+
+      return list.slice(startIndex, startIndex + limit)
+    }
+    const sortOutput = (list: Task[]) => {
+      if (!sortBy) return list
+
+      return [...list].sort((a, b) => a[sortBy].localeCompare(b[sortBy]))
+    }
+
+    if (status) {
+      return sortOutput(paginate(this.tasks.filter((task: Task) => task.status === status)))
+    }
+
+    return sortOutput(paginate(this.tasks))
+  }
 }
