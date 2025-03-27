@@ -7,12 +7,13 @@ export class RolesGuard implements CanActivate {
     const request : Request = context.switchToHttp().getRequest()
 
     //JWT decoding
+    let jwtAuthenticated: boolean = false;
     if (request.headers['authorization']) {
       const decodedToken : any = jwtDecode(request.headers['authorization']);
-      console.log('JWT token user role: ', decodedToken.role)
+      if (decodedToken.role === 'admin') jwtAuthenticated = true;
     }
 
-    if (request.headers['x-role'] !== 'admin') throw new ForbiddenException("Доступ запрещён: требуется роль admin")
+    if ((request.headers['x-role'] !== 'admin') && !jwtAuthenticated) throw new ForbiddenException("Доступ запрещён: требуется роль admin")
     return true
   }
 }
