@@ -10,7 +10,7 @@ export class HttpErrorFilter implements ExceptionFilter {
 
     const errorTimestamp = new Date().toISOString()
 
-    appendFileSync('errors.log', `[${errorTimestamp}] ${status} - ${exception.message}\n/`)
+    appendFileSync('errors.log', `[${errorTimestamp}] ${status} - ${exception.message}\n`)
 
     response
       .status(status)
