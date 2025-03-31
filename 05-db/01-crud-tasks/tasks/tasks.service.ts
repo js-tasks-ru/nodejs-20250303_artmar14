@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { CreateTaskDto } from "./dto/create-task.dto";
 import { UpdateTaskDto } from "./dto/update-task.dto";
 import { InjectRepository } from "@nestjs/typeorm";
+import { FindManyOptions } from "typeorm";
 import { Task } from "./entities/task.entity";
 import { Repository } from "typeorm";
 import { GetTasksDto } from "./dto/get-tasks.dto";
@@ -19,24 +20,21 @@ export class TasksService {
   }
 
   async findAll(query: GetTasksDto): Promise<Task[]> {
-    const {
-      page,
-      pageSize = 1
-    } = query
-
-    if (page) {
-      const [tasks] = await this.taskRepository.findAndCount({
-        order: {
-          id: "ASC"
-        },
-        skip: (page - 1) * pageSize,
-        take: pageSize
-      })
-      if (!tasks.length) throw new NotFoundException("No tasks found.")
-      return tasks
+    const { page, pageSize } = query
+    const findOptions: FindManyOptions = {
+      order: {
+        id: "ASC"
+      }
+    }
+    if (page && pageSize) {
+      findOptions.skip = (page - 1) * pageSize
+      findOptions.take = pageSize
     }
 
-    return this.taskRepository.find()
+    const tasks = await this.taskRepository.find(findOptions)
+    if (!tasks.length) throw new NotFoundException("No tasks found.")
+
+    return tasks
   }
 
   async findOne(id: number): Promise<Task> {
