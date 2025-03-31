@@ -19,22 +19,19 @@ export class TasksService {
     return this.taskRepository.save(task)
   }
 
-  async findAll(query: GetTasksDto): Promise<Task[]> {
-    const { page, pageSize } = query
+  findAll(query: GetTasksDto): Promise<Task[]> {
+    const { page, limit } = query
     const findOptions: FindManyOptions = {
       order: {
         id: "ASC"
       }
     }
-    if (page && pageSize) {
-      findOptions.skip = (page - 1) * pageSize
-      findOptions.take = pageSize
+    if (page && limit) {
+      findOptions.skip = (page - 1) * limit
+      findOptions.take = limit
     }
 
-    const tasks = await this.taskRepository.find(findOptions)
-    if (!tasks.length) throw new NotFoundException("No tasks found.")
-
-    return tasks
+    return this.taskRepository.find(findOptions)
   }
 
   async findOne(id: number): Promise<Task> {
@@ -52,7 +49,7 @@ export class TasksService {
   }
 
   async remove(id: number): Promise<void> {
-    await this.findOne(id) // Не совсем понимаю зачем здесь проверка на существование задачи
+    await this.findOne(id)
     await this.taskRepository.delete(id)
   }
 }

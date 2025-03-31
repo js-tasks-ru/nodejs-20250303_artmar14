@@ -14,5 +14,5 @@ export class GetTasksDto {
   @IsInt()
   @IsPositive()
   @Min(1)
-  pageSize: number;
+  limit: number;
 }
