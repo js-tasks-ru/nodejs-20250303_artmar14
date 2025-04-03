@@ -40,5 +40,7 @@ export class TasksService {
   async remove(id: ObjectId) {
     const task = await this.TaskModel.findOneAndDelete({ _id: id }).exec()
     if (!task) throw new NotFoundException("Task not found")
+
+    return 'Задача успешно удалена'
   }
 }
