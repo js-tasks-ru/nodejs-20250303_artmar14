@@ -9,13 +9,24 @@ import { Model, ObjectId } from "mongoose";
 export class TasksService {
   constructor(@InjectModel(Task.name) private TaskModel: Model<Task>) {}
 
-  create(createTaskDto: CreateTaskDto) {}
+  create(createTaskDto: CreateTaskDto): Promise<Task> {
+    return this.TaskModel.create(createTaskDto);
+  }
 
-  async findAll() {}
+  async findAll(): Promise<Task[]> {
+    return this.TaskModel.find()
+  }
 
-  async findOne(id: ObjectId) {}
+  async findOne(id: ObjectId) {
+    return this.TaskModel.findById(id)
+  }
 
-  async update(id: ObjectId, updateTaskDto: UpdateTaskDto) {}
+  async update(id: ObjectId, updateTaskDto: UpdateTaskDto) {
+    return this.TaskModel.updateOne(id, updateTaskDto)
+  }
 
-  async remove(id: ObjectId) {}
+  async remove(id: ObjectId) {
+    // todo: check if exists
+    this.TaskModel.deleteOne({ _id: id })
+  }
 }
