@@ -9,24 +9,36 @@ import { Model, ObjectId } from "mongoose";
 export class TasksService {
   constructor(@InjectModel(Task.name) private TaskModel: Model<Task>) {}
 
-  create(createTaskDto: CreateTaskDto): Promise<Task> {
-    return this.TaskModel.create(createTaskDto);
+  async create(createTaskDto: CreateTaskDto): Promise<Task> {
+    try {
+      const createdTask = new this.TaskModel(createTaskDto);
+
+      return createdTask.save();
+    } catch (error) {
+      throw error;
+    }
   }
 
   async findAll(): Promise<Task[]> {
-    return this.TaskModel.find()
+    return this.TaskModel.find().exec()
   }
 
-  async findOne(id: ObjectId) {
-    return this.TaskModel.findById(id)
+  async findOne(id: ObjectId): Promise<Task> {
+    const task = await this.TaskModel.findById(id).exec()
+    if (!task) throw new NotFoundException("Task not found")
+
+    return task
   }
 
   async update(id: ObjectId, updateTaskDto: UpdateTaskDto) {
-    return this.TaskModel.updateOne(id, updateTaskDto)
+    const task = await this.TaskModel.findByIdAndUpdate(id, updateTaskDto, { new: true }).exec()
+    if (!task) throw new NotFoundException("Task not found")
+
+    return task;
   }
 
   async remove(id: ObjectId) {
-    // todo: check if exists
-    this.TaskModel.deleteOne({ _id: id })
+    const task = await this.TaskModel.findOneAndDelete({ _id: id }).exec()
+    if (!task) throw new NotFoundException("Task not found")
   }
 }

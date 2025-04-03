@@ -5,7 +5,7 @@ export type TaskDocument = HydratedDocument<Task>;
 
 @Schema()
 export class Task {
-  @Prop()
+  @Prop({ required: true, unique: true })
   title: string
 
   @Prop()
@@ -13,6 +13,9 @@ export class Task {
 
   @Prop({ default: false })
   isCompleted: boolean
+
+  @Prop()
+  deadline: string
 }
 
 export const TaskSchema = SchemaFactory.createForClass(Task);

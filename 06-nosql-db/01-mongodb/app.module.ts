@@ -6,9 +6,7 @@ import database from './config/db'
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true
-    }),
+    ConfigModule.forRoot({ isGlobal: true }),
     MongooseModule.forRootAsync(database.asProvider()),
     TasksModule,
   ],

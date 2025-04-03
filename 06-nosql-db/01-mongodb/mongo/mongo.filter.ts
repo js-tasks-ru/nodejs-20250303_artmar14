@@ -4,5 +4,15 @@ import mongoose from "mongoose";
 
 @Catch(mongoose.Error.ValidationError, mongoose.mongo.MongoError)
 export class MongoFilter implements ExceptionFilter {
-  catch(exception: any, host: ArgumentsHost) {}
+  catch(exception: any, host: ArgumentsHost) {
+    const response : Response = host.switchToHttp().getResponse()
+
+    response
+      .status(400)
+      .json({
+        error: 'Bad Request',
+        statusCode: 400,
+        message: exception.message,
+      });
+  }
 }
