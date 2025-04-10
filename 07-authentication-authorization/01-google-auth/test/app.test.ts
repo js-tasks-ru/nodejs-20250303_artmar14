@@ -149,7 +149,7 @@ describe("Authentication (e2e)", () => {
         displayName: mockGoogleProfile.displayName,
         avatar: mockGoogleProfile.photos[0].value,
       },
-      { secret: "killer-is-jim" },
+      { secret: "killer-is-jim", expiresIn: "60s" },
     );
 
     const response = await request(app.getHttpServer())
